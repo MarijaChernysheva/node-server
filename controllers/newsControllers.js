@@ -1,11 +1,11 @@
-const { New } = require('../models');
+const { News } = require('../models');
 
 const OK = 200;
 const BAD_REQUEST = 400;
 
 module.exports = {
   allNews(req, res) {
-    return New
+    return News
       .findAll({
         order: [
           ['createdAt', 'ASC'],
