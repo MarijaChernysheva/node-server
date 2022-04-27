@@ -13,5 +13,5 @@ module.exports = {
       })
       .then((news) => res.status(OK).send(news))
       .catch((error) => res.status(BAD_REQUEST).send(error));
-    }
-}
+  },
+};
