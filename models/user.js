@@ -4,7 +4,11 @@ const {
 
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
-    static associate() {
+    static associate(models) {
+      User.hasMany(models.News, {
+        foreignKey: 'id',
+        as: 'news',
+      });
     }
   }
   User.init({
