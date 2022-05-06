@@ -28,7 +28,7 @@ module.exports = {
     })
       .then((user) => {
         if (!user[1]) return res.status(BAD_REQUEST).send({ message: 'User is exist' });
-        return res.status(OK).send(user.id);
+        return res.status(OK).send(user[0].id);
       })
       .catch((error) => res.status(BAD_REQUEST).send(error));
   },
