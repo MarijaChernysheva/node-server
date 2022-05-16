@@ -6,7 +6,7 @@ module.exports = (sequelize, DataTypes) => {
   class News extends Model {
     static associate(models) {
       News.belongsTo(models.User, {
-        foreignKey: 'id',
+        foreignKey: 'userId',
         as: 'user',
       });
     }
@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
     title: DataTypes.STRING,
     text: DataTypes.STRING,
     tag: DataTypes.STRING,
-    userId: DataTypes.STRING,
+    userId: DataTypes.NUMBER,
     image: DataTypes.STRING,
   }, {
     sequelize,
