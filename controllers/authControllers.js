@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-const { User, News } = require('../models');
+const { User } = require('../models');
 
 const salt = bcrypt.genSaltSync(10);
 
@@ -13,7 +13,7 @@ module.exports = {
     const { login, password, email } = req.body;
 
     if (!login || !password || !email) {
-      return res.status(BAD_REQUEST).send({ message: 'Enter data, please' });
+      return res.status(BAD_REQUEST).json({ message: 'Enter data, please' });
     }
 
     return User.findOrCreate({
@@ -27,8 +27,8 @@ module.exports = {
       },
     })
       .then((user) => {
-        if (!user[1]) return res.status(BAD_REQUEST).send({ message: 'User is exist' });
-        return res.status(OK).send(user[0].id);
+        if (!user[1]) return res.status(BAD_REQUEST).json({ message: 'User is exist' });
+        return res.status(OK).send({ created: user[1] });
       })
       .catch((error) => res.status(BAD_REQUEST).send(error));
   },
@@ -37,30 +37,31 @@ module.exports = {
     const { password, email } = req.body;
 
     if (!password || !email) {
-      return res.status(BAD_REQUEST).send({ message: 'Enter password or email, please' });
+      return res.status(BAD_REQUEST).json({ message: 'Enter password or email, please' });
     }
 
     return User.findOne({
       where: {
         email,
       },
-      include: [{
-        model: News,
-        as: 'news',
-        required: false,
-      }],
     })
       .then((user) => {
         if (!user) {
-          return res.status(BAD_REQUEST).send({ message: 'User is not found' });
+          return res.status(BAD_REQUEST).json({ message: 'User is not found' });
         }
         const passwordsValid = bcrypt.compareSync(password, user.password);
-        if (!passwordsValid) return res.status(BAD_REQUEST).send({ massage: 'Invalid password!' });
+        if (!passwordsValid) return res.status(BAD_REQUEST).json({ message: 'Invalid password!' });
 
         const token = jwt.sign(user.id, process.env.SECRET_KEY);
 
+        const currentUser = {
+          email: user.email,
+          id: user.id,
+          login: user.login,
+        };
+
         return res.status(OK).json({
-          user,
+          currentUser,
           token: `Bearer ${token}`,
         });
       })

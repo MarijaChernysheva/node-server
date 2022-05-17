@@ -1,4 +1,4 @@
-const { News } = require('../models');
+const { News, User } = require('../models');
 
 const OK = 200;
 const BAD_REQUEST = 400;
@@ -10,6 +10,11 @@ module.exports = {
         order: [
           ['createdAt', 'ASC'],
         ],
+        include: [{
+          model: User,
+          as: 'user',
+          required: false,
+        }],
       })
       .then((news) => res.status(OK).send(news))
       .catch((error) => res.status(BAD_REQUEST).send(error));
