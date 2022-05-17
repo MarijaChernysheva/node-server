@@ -13,7 +13,7 @@ module.exports = {
     const { login, password, email } = req.body;
 
     if (!login || !password || !email) {
-      return res.status(OK).send({ error: 'Enter data, please' });
+      return res.status(BAD_REQUEST).json({ message: 'Enter data, please' });
     }
 
     return User.findOrCreate({
@@ -27,7 +27,7 @@ module.exports = {
       },
     })
       .then((user) => {
-        if (!user[1]) return res.status(OK).send({ error: 'User is exist' });
+        if (!user[1]) return res.status(BAD_REQUEST).json({ message: 'User is exist' });
         return res.status(OK).send({ created: user[1] });
       })
       .catch((error) => res.status(BAD_REQUEST).send(error));
@@ -37,7 +37,7 @@ module.exports = {
     const { password, email } = req.body;
 
     if (!password || !email) {
-      return res.status(OK).send({ error: 'Enter password or email, please' });
+      return res.status(BAD_REQUEST).json({ message: 'Enter password or email, please' });
     }
 
     return User.findOne({
@@ -47,10 +47,10 @@ module.exports = {
     })
       .then((user) => {
         if (!user) {
-          return res.status(OK).send({ error: 'User is not found' });
+          return res.status(BAD_REQUEST).json({ message: 'User is not found' });
         }
         const passwordsValid = bcrypt.compareSync(password, user.password);
-        if (!passwordsValid) return res.status(OK).send({ error: 'Invalid password!' });
+        if (!passwordsValid) return res.status(BAD_REQUEST).json({ message: 'Invalid password!' });
 
         const token = jwt.sign(user.id, process.env.SECRET_KEY);
 
