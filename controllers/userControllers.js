@@ -18,4 +18,18 @@ module.exports = {
       .then((user) => res.status(OK).send(user))
       .catch((error) => res.status(BAD_REQUEST).send(error));
   },
+  getAuthor(req, res) {
+    return User.findOne(
+      {
+        where: { id: req.userId },
+        include: [{
+          model: News,
+          as: 'news',
+          required: false,
+        }],
+      },
+    )
+      .then((author) => res.status(OK).send(author))
+      .catch((error) => res.status(BAD_REQUEST).send(error));
+  },
 };

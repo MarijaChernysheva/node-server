@@ -62,7 +62,7 @@ module.exports = {
 
         return res.status(OK).json({
           currentUser,
-          token: `Bearer ${token}`,
+          token,
         });
       })
       .catch((error) => res.status(BAD_REQUEST).send(error));
