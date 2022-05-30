@@ -2,6 +2,7 @@ const { User, News } = require('../models');
 
 const OK = 200;
 const BAD_REQUEST = 400;
+const NOT_FOUND = 404;
 
 module.exports = {
   getUser(req, res) {
@@ -42,17 +43,17 @@ module.exports = {
     })
       .then((user) => {
         if (!user) {
-          return res.status(404).send({
+          return res.status(NOT_FOUND).send({
             message: 'User Not Found',
           });
         }
         return user
           .update({ login: req.body.login, avatar: req.file?.path })
           .then((editUser) => {
-            res.status(200).send(editUser);
+            res.status(OK).send(editUser);
           })
-          .catch((error) => res.status(400).send(error));
+          .catch((error) => res.status(BAD_REQUEST).send(error));
       })
-      .catch((error) => res.status(400).send(error));
+      .catch((error) => res.status(BAD_REQUEST).send(error));
   },
 };
