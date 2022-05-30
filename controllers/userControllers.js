@@ -33,9 +33,6 @@ module.exports = {
       .catch((error) => res.status(BAD_REQUEST).send(error));
   },
   editUser(req, res) {
-    const { login } = req.body;
-    const { file } = req;
-
     return User.findByPk(req.userId, {
       include: [{
         model: News,
@@ -50,7 +47,7 @@ module.exports = {
           });
         }
         return user
-          .update({ login, avatar: file?.path })
+          .update({ login: req.body.login, avatar: req.file?.path })
           .then((editUser) => {
             res.status(200).send(editUser);
           })
