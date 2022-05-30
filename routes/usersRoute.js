@@ -5,7 +5,6 @@ const router = express.Router();
 const { tokenDecoder } = require('../middleware/tokenDecoder');
 const { getUser, getAuthor, editUser } = require('../controllers/userControllers');
 
-// const upload = multer({ dest: 'images/' });
 const storageConfig = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, './public/images');
