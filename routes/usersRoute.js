@@ -17,5 +17,4 @@ const storageConfig = multer.diskStorage({
 router.get('/', tokenDecoder, getAuthor);
 router.get('/:id', tokenDecoder, getUser);
 router.patch('/', multer({ storage: storageConfig }).single('file'), tokenDecoder, editUser);
-
 module.exports = router;
