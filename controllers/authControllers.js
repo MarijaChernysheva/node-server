@@ -26,10 +26,24 @@ module.exports = {
         email,
       },
     })
+      
       .then((user) => {
+
         if (!user[1]) return res.status(BAD_REQUEST).json({ message: 'User is exist' });
-        return res.status(OK).send({ created: user[1] });
+
+        const token = jwt.sign(user[0].id, process.env.SECRET_KEY);
+
+        const currentUser = {
+          email: user[0].email,
+          id: user[0].id,
+          login: user[0].login,
+        };
+        return res.status(OK).json({
+          currentUser,
+          token,
+        });
       })
+      
       .catch((error) => res.status(BAD_REQUEST).send(error));
   },
 
@@ -53,7 +67,6 @@ module.exports = {
         if (!passwordsValid) return res.status(BAD_REQUEST).json({ message: 'Invalid password!' });
 
         const token = jwt.sign(user.id, process.env.SECRET_KEY);
-
         const currentUser = {
           email: user.email,
           id: user.id,
