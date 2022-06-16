@@ -19,4 +19,18 @@ module.exports = {
       .then((news) => res.status(OK).send(news))
       .catch((error) => res.status(BAD_REQUEST).send(error));
   },
+
+  addNewsUser(req, res) {
+    const { title, text, tag } = req.body;
+    return News
+      .create 
+      ({ 
+        title,
+        text,
+        tag,
+        userId: req.userId,
+      })
+      .then(() => res.sendStatus(OK))
+      .catch((error) => res.status(BAD_REQUEST).send(error));
+  },
 };
