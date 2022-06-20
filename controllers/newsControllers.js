@@ -23,13 +23,15 @@ module.exports = {
   addNewsUser(req, res) {
     const { title, text, tag } = req.body;
     const userId = req.userId;
+    const image = req.file?.path;
     return News
       .create 
       ({ 
+        userId,
         title,
         text,
         tag,
-        userId,
+        image,
       })
       .then(() => res.sendStatus(OK))
       .catch((error) => res.status(BAD_REQUEST).send(error));
