@@ -1,6 +1,10 @@
-const request = require('supertest');
 const express = require('express');
+const request = require('supertest');
+
 const usersRoute = require('../routes/usersRoute')
+
+const TEST_LOGIN = 'test';
+const TEST_ID = 1;
 
 const app = express();
 app.use(express.json());
@@ -14,34 +18,33 @@ jest.mock('../controllers/userControllers', () => ({
 
 jest.mock('../middleware/tokenDecoder.js', () =>({
   tokenDecoder: jest.fn((req, _, next) => {
-    req.userId = 1;
+    req.userId = TEST_ID;
     next();
   })
 }))
 
 describe('usersRoute', () => {
-  test('GET /users - must return the authors by id', async () => {
+  test('GET /users - must return the authors', async () => {
     const response = await request(app).get('/users');
 
     expect(response.status).toBe(200);
-    expect(response.body).toEqual({ id: 1 });
+    expect(response.body).toEqual({ id: TEST_ID });
 
   })
-  test('GET /users/:id - must return the author', async () => {
-    const userId = 123;
-    const response = await request(app).get(`/users/${userId}`);
+  test('GET /users/:id - must return the author by id', async () => {
+    const response = await request(app).get(`/users/${TEST_ID}`);
 
     expect(response.status).toBe(200);
-    expect(response.body).toEqual({id: String(userId)})
+    expect(response.body).toEqual({id: String(TEST_ID)})
   })
   test('PATCH /users - must edit author', async () => {
     const response = await request(app)
       .patch('/users')
-      .send({ login: 'user123' })
+      .send({ login: TEST_LOGIN })
       .set('Authorization', 'Bearer someValidToken');
 
       expect(response.status).toBe(200);
-      expect(response.body).toEqual({id: 1, login: 'user123'});
+      expect(response.body).toEqual({id: TEST_ID, login: TEST_LOGIN});
   })
 })
 

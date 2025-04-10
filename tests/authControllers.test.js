@@ -1,7 +1,14 @@
-const bcrypt = require('bcrypt'); 
+require('dotenv').config();
+
+const bcrypt = require('bcrypt');
+
 const authControllers = require('../controllers/authControllers');
 const { User } = require('../models');
-require('dotenv').config();
+
+const TEST_EMAIL = 'test@test.com';
+const TEST_PASSWORD = 'test';
+const TEST_LOGIN = 'test';
+const TEST_ID = 1;
 
 jest.mock('../models', () => ({
   User: {
@@ -14,9 +21,9 @@ describe('authControllers', () => {
   describe('signup', () => {
     const req = {
       body: {
-        login: 'test',
-        password: 'test',
-        email: 'test@test.com',
+        login: TEST_LOGIN,
+        password: TEST_PASSWORD,
+        email: TEST_EMAIL,
       }
     }
     const res = {
@@ -27,7 +34,7 @@ describe('authControllers', () => {
     test('should handle successful registration', async () => {
   
       User.findOrCreate.mockResolvedValue([
-        { id: 1, login: 'test', email: 'test@test.com' },
+        { id: TEST_ID, login: TEST_LOGIN, email: TEST_EMAIL },
         true,
       ]);
   
@@ -36,9 +43,9 @@ describe('authControllers', () => {
       expect(res.status).toHaveBeenCalledWith(200);
       expect(res.json).toHaveBeenCalledWith({
         currentUser: {
-          email: 'test@test.com',
-          id: 1,
-          login: 'test',
+          email: TEST_EMAIL,
+          id: TEST_ID,
+          login: TEST_LOGIN,
         },
         token: expect.any(String),
       });
@@ -47,7 +54,7 @@ describe('authControllers', () => {
     test('should return error when user already exists', async () => {
   
       User.findOrCreate.mockResolvedValue([
-        { id: 1, login: 'test', email: 'test@test.com' },
+        { id: TEST_ID, login: TEST_LOGIN, email: TEST_EMAIL },
         false,
       ]);
   
@@ -60,8 +67,8 @@ describe('authControllers', () => {
   describe('login',  () => {
     const req ={
       body: { 
-        password: 'test',
-        email: 'test@test.com'
+        password: TEST_PASSWORD,
+        email: TEST_EMAIL,
       }
     }
     const res = {
@@ -71,10 +78,10 @@ describe('authControllers', () => {
 
     test('should handle successful login', async () => {  
       User.findOne.mockResolvedValue({ 
-        id: 1, 
-        login: 'test', 
-        email: 'test@test.com', 
-        password: bcrypt.hashSync('test', 10),
+        id: TEST_ID, 
+        login: TEST_LOGIN, 
+        email: TEST_EMAIL, 
+        password: bcrypt.hashSync(TEST_PASSWORD, 10),
       });
       
       await authControllers.login(req, res);
@@ -82,9 +89,9 @@ describe('authControllers', () => {
       expect(res.status).toHaveBeenCalledWith(200);
       expect(res.json).toHaveBeenCalledWith({
         currentUser: {
-          email: 'test@test.com',
-          id: 1,
-          login: 'test',
+          email: TEST_EMAIL,
+          id: TEST_ID,
+          login: TEST_LOGIN,
         },
         token: expect.any(String),
       });
@@ -100,10 +107,10 @@ describe('authControllers', () => {
 
     test ('should return massage when password is invalid', async () => {
       User.findOne.mockResolvedValue({ 
-        id: 1, 
-        login: 'test', 
-        email: 'test@test.com', 
-        password: bcrypt.hashSync('correct_password', 10),
+        id: TEST_ID, 
+        login: TEST_LOGIN, 
+        email: TEST_EMAIL, 
+        password: bcrypt.hashSync(TEST_PASSWORD, 10),
       });
 
       req.body.password = 'wrong_password';

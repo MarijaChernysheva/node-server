@@ -1,6 +1,12 @@
 
 const { Sequelize, DataTypes } = require('sequelize');
+
 const UserModel = require('../models/user');
+
+const TEST_EMAIL = 'test@test.com';
+const TEST_PASSWORD = 'test';
+const TEST_LOGIN = 'test';
+const TEST_AVATAR = 'test.png';
 
 describe('User model', () => {
   let sequelize;
@@ -20,18 +26,18 @@ describe('User model', () => {
 
   test('should create a user with correct attributes', async () => {
     const userData = {
-      login: 'test',
-      password: 'test',
-      email: 'test@test.com',
-      avatar: 'test.png'
+      login: TEST_LOGIN,
+      password: TEST_PASSWORD,
+      email: TEST_EMAIL,
+      avatar: TEST_AVATAR,
     };
 
     const user = await User.create(userData);
 
     expect(user).toBeDefined();
-    expect(user.login).toBe('test');
-    expect(user.password).toBe('test');
-    expect(user.email).toBe('test@test.com');
-    expect(user.avatar).toBe('test.png');
+    expect(user.login).toBe(TEST_LOGIN);
+    expect(user.password).toBe(TEST_PASSWORD);
+    expect(user.email).toBe(TEST_EMAIL);
+    expect(user.avatar).toBe(TEST_AVATAR);
   });
 })
